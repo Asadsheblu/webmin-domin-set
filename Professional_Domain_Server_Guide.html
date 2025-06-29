@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Domain & Server Setup Guide (Bangla)</title>
+  <style>
+    /* Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; background: #f7f9fc; color: #333; padding: 20px; }
+    header { background: #34495e; color: #fff; padding: 20px; text-align: center; border-radius: 8px; }
+    header h1 { font-size: 1.8rem; }
+
+    nav { margin: 20px 0; }
+    nav ul { list-style: none; display: flex; gap: 10px; flex-wrap: wrap; }
+    nav a { text-decoration: none; padding: 8px 12px; background: #3498db; color: #fff; border-radius: 4px; transition: background 0.3s; }
+    nav a:hover { background: #2980b9; }
+
+    section { background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+    h2 { margin-bottom: 10px; color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
+    p { margin-bottom: 10px; }
+
+    code { background: #ecf0f1; padding: 2px 4px; border-radius: 4px; font-family: Consolas, monospace; }
+
+    .accordion-item { margin-bottom: 10px; }
+    .accordion-header { background: #ecf0f1; padding: 10px; border-radius: 4px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: #fff; padding: 0 10px; border-left: 3px solid #3498db; }
+    .accordion-content p, .accordion-content pre { margin: 10px 0; }
+    .accordion-header.active { background: #3498db; color: #fff; }
+    .accordion-header.active::after { transform: rotate(180deg); }
+    .accordion-header::after { content: '▼'; transition: transform 0.3s; }
+
+    .flowchart { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-top: 20px; }
+    .flow-step { flex: 1; min-width: 120px; background: #3498db; color: #fff; padding: 10px; margin: 5px; text-align: center; border-radius: 4px; position: relative; }
+    .flow-step:not(:last-child)::after { content: '→'; position: absolute; right: -10px; top: 50%; transform: translateY(-50%); color: #2c3e50; font-weight: bold; }
+
+    footer { text-align: center; margin-top: 30px; font-size: 0.9rem; color: #777; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Domain & Server Setup Guide (Bangla)</h1>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#steps">Step-by-Step</a></li>
+    <li><a href="#checklist">Checklist</a></li>
+    <li><a href="#flow">Flow Chart</a></li>
+  </ul>
+</nav>
+
+<section id="overview">
+  <h2>Overview</h2>
+  <p>এই গাইডটি ব্যবহার করে তুমি সহজে নতুন ডোমেইন সেটআপ, সার্ভারে প্রজেক্ট ডিপ্লয়, DNS কনফিগারেশন এবং SSL সেট করতে পারবে। Step-by-step সব বর্ণনা করা হয়েছে, যাতে ভবিষ্যতে তুমি নিজেরাই সহজে করতে পারো।</p>
+</section>
+
+<section id="steps">
+  <h2>Step-by-Step Guide</h2>
+  <div class="accordion-item">
+    <div class="accordion-header">1️⃣ সার্ভারে লগইন</div>
+    <div class="accordion-content"><pre>ssh root@YOUR_SERVER_IP</pre></div>
+  </div>
+  <div class="accordion-item">
+    <div class="accordion-header">2️⃣ প্রজেক্ট ফোল্ডারে যাওয়া</div>
+    <div class="accordion-content"><pre>cd /var/www/ytdownloader</pre></div>
+  </div>
+  <div class="accordion-item">
+    <div class="accordion-header">3️⃣ কোডে নতুন ডোমেইন ঠিক করা</div>
+    <div class="accordion-content"><pre>nano app.js  ➜ CORS origin আপডেট ➜ Ctrl+O ➜ Ctrl+X</pre></div>
+  </div>
+  <div class="accordion-item">
+    <div class="accordion-header">4️⃣ pm2 দিয়ে অ্যাপ রিস্টার্ট</div>
+    <div class="accordion-content"><pre>pm2 restart ytdownloader  ➜ pm2 list</pre></div>
+  </div>
+  <div class="accordion-item">
+    <div class="accordion-header">5️⃣ DNS রেকর্ড Add (cPanel)</div>
+    <div class="accordion-content"><p>Name: <code>script</code>, Type: <code>A</code>, Value: সার্ভার IP ➜ Save</p></div>
+  </div>
+  <div class="accordion-item">
+    <div class="accordion-header">6️⃣ Windows এ DNS Flush</div>
+    <div class="accordion-content"><pre>ipconfig /flushdns</pre></div>
+  </div>
+  <div class="accordion-item">
+    <div class="accordion-header">7️⃣ Nginx কনফিগ সেট</div>
+    <div class="accordion-content"><p><code>nano /etc/nginx/sites-available/default ➜ পেস্ট server block ➜ Ctrl+O ➜ Ctrl+X</code></p></div>
+  </div>
+  <div class="accordion-item">
+    <div class="accordion-header">8️⃣ Nginx চেক ও রিলোড</div>
+    <div class="accordion-content"><pre>nginx -t  ➜ nginx -s reload</pre></div>
+  </div>
+  <div class="accordion-item">
+    <div class="accordion-header">9️⃣ SSL সেট করা</div>
+    <div class="accordion-content"><pre>certbot --nginx -d script.formhistory.com</pre></div>
+  </div>
+  <div class="accordion-item">
+    <div class="accordion-header">🔟 Browser এ টেস্ট</div>
+    <div class="accordion-content"><a href="https://script.formhistory.com" target="_blank">https://script.formhistory.com</a></div>
+  </div>
+</section>
+
+<section id="checklist">
+  <h2>Final Checklist</h2>
+  <ul>
+    <li>✅ DNS রেকর্ড ঠিক আছে</li>
+    <li>✅ pm2 রিস্টার্ট হয়েছে</li>
+    <li>✅ Nginx কনফিগ ঠিক হয়েছে</li>
+    <li>✅ SSL ঠিকভাবে সেট হয়েছে</li>
+    <li>✅ Local DNS flush করা হয়েছে</li>
+    <li>✅ Browser এ সব ঠিকমতো লোড হচ্ছে</li>
+  </ul>
+</section>
+
+<section id="flow">
+  <h2>Flow Chart</h2>
+  <div class="flowchart">
+    <div class="flow-step">ডোমেইন</div>
+    <div class="flow-step">DNS Setup</div>
+    <div class="flow-step">Server Config</div>
+    <div class="flow-step">Nginx Setup</div>
+    <div class="flow-step">App Restart</div>
+    <div class="flow-step">SSL Setup</div>
+    <div class="flow-step">Browser Test</div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2025 YourCompany. সব অধিকার সংরক্ষিত।</p>
+</footer>
+
+<script>
+  document.querySelectorAll('.accordion-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const active = header.classList.toggle('active');
+      const content = header.nextElementSibling;
+      if (active) {
+        content.style.maxHeight = content.scrollHeight + 'px';
+      } else {
+        content.style.maxHeight = null;
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
